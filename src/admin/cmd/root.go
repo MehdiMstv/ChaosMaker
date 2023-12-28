@@ -5,8 +5,8 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "admin serve",
-	Short: "serves admin panel of chaos maker",
+	Use:   "chaos serve",
+	Short: "serves chaos admin panel",
 	Run:   nil,
 }
 
