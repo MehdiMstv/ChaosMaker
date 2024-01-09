@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package protocols;
+
+option go_package = "interface/calculator";
+
+message CalculatorRequest {
+  enum Operation {
+    UNKNOWN = 0;
+    SUM = 1;
+  }
+  Operation operation = 1;
+  int64 first_number = 2;
+  int64 second_number = 3;
+}
+
+message CalculatorResponse {
+  int64 result = 1;
+}
+
+service Calculator{
+  rpc Calculate1(CalculatorRequest) returns (CalculatorResponse);
+  rpc Calculate2(CalculatorRequest) returns (CalculatorResponse);
+}
+
