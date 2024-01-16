@@ -49,7 +49,7 @@ func generateChaosFile(gen *protogen.Plugin, file *protogen.File) {
 	g.P(")")
 	g.P()
 	for _, method := range service.Methods {
-		g.P("type ", method.GoName, "RequestEntry struct {")
+		g.P("type ", toLower(method.GoName), "RequestEntry struct {")
 		g.P("	Timestamp primitive.DateTime            `bson:\"timestamp\"`")
 		g.P("	Request   *calculator.", method.Input.GoIdent, " `bson:\"request\"`")
 		g.P("}")
