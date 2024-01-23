@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
@@ -86,14 +85,19 @@ func generateChaosFile(gen *protogen.Plugin, file *protogen.File) {
 	for _, method := range service.Methods {
 		g.P("func handle", method.GoName, "Chaos(db *mongo.Client, conn *grpc.ClientConn) gin.HandlerFunc {")
 		g.P("	fn := func (c *gin.Context){")
+		g.P(`		chaosID := c.Request.FormValue("id")`)
+		g.P(`		http.Get(fmt.Sprintf("http://127.0.0.1:9033/api/chaoses?chaos_id=%s", chaosID))`)
 		g.P("		var data []", method.GoName, "RequestEntry")
 		g.P(`		filters, _ := getRequests(db, "handle`, method.GoName, `Chaos")`)
 		g.P("		filters.All(context.Background(), &data)")
 		g.P("		client := ", file.GoPackageName, ".New", service.GoName, "Client(conn)")
+		g.P(`		http.Get(fmt.Sprintf("http://127.0.0.1:9033/api/chaoses?chaos_id=%s", chaosID))`)
 		g.P("		for _, v := range data {")
 		g.P("			response, _ := client.", method.GoName, "(context.Background(), v.Request)")
 		g.P("			fmt.Println(response)")
 		g.P("		}")
+		g.P(`		http.Get(fmt.Sprintf("http://127.0.0.1:9033/api/chaoses?chaos_id=%s", chaosID))`)
+		g.P(`		http.Get(fmt.Sprintf("http://127.0.0.1:9033/api/chaoses?chaos_id=%s", chaosID))`)
 		g.P(`		c.String(http.StatusOK, "Chaos created")`)
 		g.P("	}")
 		g.P("	return fn")
