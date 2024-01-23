@@ -7,6 +7,7 @@ import (
 	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/sqlite" // sql driver
 	"github.com/GoAdminGroup/go-admin/modules/language"
 	_ "github.com/GoAdminGroup/themes/adminlte" // ui theme
+	"github.com/MehdiMstv/ChaosMaker/src/admin/internal/forms/chaosadmin"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 
@@ -41,11 +42,15 @@ func serve(cmd *cobra.Command, _ []string) {
 		Language: language.EN,
 	}
 
-	_ = eng.AddConfig(cfg).
+	chaosGenerator := &chaosadmin.ChaosGenerator{}
+	_ = eng.AddConfig(cfg).AddGenerators(chaosGenerator.GetGenerator()).
 		Use(r)
 
 	r.GET("api/flags", func(context *gin.Context) {
 		flagadmin.GetFlagsByService(context, eng.SqliteConnection())
+	})
+	r.GET("api/chaoses", func(context *gin.Context) {
+		chaosadmin.SetChaosStatus(context, eng.SqliteConnection())
 	})
 
 	_ = r.Run(":9033")
