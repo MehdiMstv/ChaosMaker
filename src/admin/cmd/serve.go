@@ -8,6 +8,7 @@ import (
 	"github.com/GoAdminGroup/go-admin/modules/language"
 	_ "github.com/GoAdminGroup/themes/adminlte" // ui theme
 	"github.com/MehdiMstv/ChaosMaker/src/admin/internal/forms/chaosadmin"
+	"github.com/MehdiMstv/ChaosMaker/src/admin/internal/pages"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 
@@ -34,18 +35,23 @@ func serve(cmd *cobra.Command, _ []string) {
 
 	cfg := &config.Config{
 		Databases: provideDatabaseConfig(),
-		UrlPrefix: "chaos",
+		UrlPrefix: "admin",
 		Store: config.Store{
 			Path:   "./uploads",
 			Prefix: "uploads",
 		},
 		Language: language.EN,
+		Debug:    true,
 	}
 
-	chaosGenerator := &chaosadmin.ChaosGenerator{}
-	_ = eng.AddConfig(cfg).AddGenerators(chaosGenerator.GetGenerator()).
-		Use(r)
+	err := eng.AddConfig(cfg).Use(r)
+	if err != nil {
+	}
 
+	chaosGenerator := &chaosadmin.ChaosGenerator{Conn: eng.SqliteConnection()}
+	flagGenerator := &flagadmin.FlagsGenerator{Conn: eng.SqliteConnection()}
+	eng.AddGenerators(chaosGenerator.GetGenerator(), flagGenerator.GetGenerator())
+	eng.HTML("GET", "/admin", pages.DashboardPage)
 	r.GET("api/flags", func(context *gin.Context) {
 		flagadmin.GetFlagsByService(context, eng.SqliteConnection())
 	})
