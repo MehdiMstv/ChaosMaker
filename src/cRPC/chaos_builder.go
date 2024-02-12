@@ -107,7 +107,7 @@ func generateChaosFile(gen *protogen.Plugin, file *protogen.File) {
 	}
 	g.P("func readFlags(flags *flagData) {")
 	g.P("	for {")
-	g.P(`		response, err := http.Get(fmt.Sprintf("http://127.0.0.1:9033/api/flags?service_name=%s", serviceName)`)
+	g.P(`		response, err := http.Get(fmt.Sprintf("http://127.0.0.1:9033/api/flags?service_name=%s", serviceName))`)
 	g.P("		if err != nil {")
 	g.P("			time.Sleep(10 * time.Second)")
 	g.P("			continue")
