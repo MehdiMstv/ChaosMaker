@@ -1,6 +1,7 @@
 package chaosadmin
 
 import (
+	"fmt"
 	"github.com/GoAdminGroup/go-admin/context"
 	"github.com/GoAdminGroup/go-admin/modules/db"
 	form2 "github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
@@ -8,6 +9,7 @@ import (
 	"github.com/GoAdminGroup/go-admin/template/types"
 	"github.com/GoAdminGroup/go-admin/template/types/form"
 	"net/http"
+	"time"
 )
 
 type ChaosGenerator struct {
@@ -26,16 +28,19 @@ func (g *ChaosGenerator) GetTable(ctx *context.Context) table.Table {
 		FieldFilterable().FieldSortable()
 	info.AddField("Status", "status", db.Text).
 		FieldFilterable().FieldSortable()
+	info.AddField("Created At", "created_at", db.Datetime).
+		FieldFilterable().FieldSortable()
 
-	info.SetTable("chaoses").SetTitle("Chaos").SetDescription("Chaos")
+	info.SetTable("chaoses").SetTitle("Chaos").SetDescription("Chaos").HideEditButton().HideDeleteButton()
 
 	formList := chaosTable.GetForm()
 	fieldOptions := getServices(g.Conn)
 	formList.AddField("Service Name", "service_name", db.Text, form.SelectSingle).FieldOptions(fieldOptions).FieldMust()
 	formList.AddField("Status", "status", db.Text, form.Default).FieldHide().FieldDefault("starting")
+	formList.AddField("Created At", "created_at", db.Text, form.Default).FieldHide().FieldDefault(time.Now().Local().String())
 
 	formList.SetTable("chaoses").SetTitle("Chaos").SetDescription("Chaos").SetPostHook(func(values form2.Values) error {
-		_, err := http.Get("")
+		_, err := http.Post(fmt.Sprintf("http://localhost:8080/start_Calculate1_chaos?id=%v", values.Get("id")), "application/json", nil)
 		if err != nil {
 			return err
 		}
