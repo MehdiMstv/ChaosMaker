@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"google.golang.org/protobuf/compiler/protogen"
+	"strings"
 )
 
 func main() {
@@ -136,3 +137,5 @@ func generateChaosFile(gen *protogen.Plugin, file *protogen.File) {
 	g.P("RunServer(mongoClient, conn)")
 	g.P("}")
 }
+
+func toLower(s string) string { return strings.ToLower(s[:1]) + s[1:] }
