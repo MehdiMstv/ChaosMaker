@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	calculator2 "github.com/MehdiMstv/ChaosMaker/src/cRPC/example/interface/calculator"
+	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 
@@ -12,7 +13,7 @@ import (
 )
 
 var (
-	port = flag.Int("port", 50051, "The server port")
+	port = flag.Int("port", 50052, "The server port")
 )
 
 // server is used to implement helloworld.GreeterServer.
@@ -36,7 +37,14 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	calculator2.RegisterCalculatorServer(s, &server{})
+	reflection.Register(s)
+	c := calculator2.CRPCConfig{
+		FlagData:      &calculator2.FlagData{},
+		IsStaging:     false,
+		ServiceName:   "chaos",
+		AdminPanelURL: "127.0.0.1:9033",
+	}
+	calculator2.RegisterCalculatorCRPCServer(s, &server{}, &c)
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
