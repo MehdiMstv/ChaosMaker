@@ -4,6 +4,9 @@ package calculator
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -69,4 +72,28 @@ func (s *calculatorcRPCClient) Calculate2(ctx context.Context, req *Calculator2R
 		return nil, err
 	}
 	return resp, nil
+}
+
+func readFlags(c *CRPCConfig) {
+	for {
+		response, err := http.Get(fmt.Sprintf("http://%s/api/flags?service_name=%s&is_staging=%t", c.AdminPanelURL, c.ServiceName, c.IsStaging))
+		if err != nil {
+			fmt.Println(err)
+			time.Sleep(10 * time.Second)
+			continue
+		}
+		decoder := json.NewDecoder(response.Body)
+		err = decoder.Decode(&c.FlagData)
+		if err != nil {
+			time.Sleep(10 * time.Second)
+			continue
+		}
+		fmt.Println(c.FlagData)
+		time.Sleep(10 * time.Second)
+	}
+}
+
+func RegisterCalculatorCRPCServer(s grpc.ServiceRegistrar, srv CalculatorServer, c *CRPCConfig) {
+	go readFlags(c)
+	s.RegisterService(&Calculator_ServiceDesc, srv)
 }

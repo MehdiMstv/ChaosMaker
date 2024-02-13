@@ -31,6 +31,7 @@ func generateFile(gen *protogen.Plugin, file *protogen.File) {
 	g.P()
 	g.P("import (")
 	g.P(`    "context"`)
+	g.P(`    "encoding/json"`)
 	g.P(`    "time"`)
 	g.P()
 	g.P(`    "go.mongodb.org/mongo-driver/mongo"`)
@@ -47,6 +48,7 @@ func generateFile(gen *protogen.Plugin, file *protogen.File) {
 
 	generateMongoClient(g, service)
 	generateService(g, service)
+	generateServer(g, service)
 }
 
 func generateMongoClient(g *protogen.GeneratedFile, service *protogen.Service) {
@@ -91,6 +93,32 @@ func generateService(g *protogen.GeneratedFile, service *protogen.Service) {
 		g.P("}")
 		g.P()
 	}
+}
+
+func generateServer(g *protogen.GeneratedFile, service *protogen.Service) {
+	g.P(`func readFlags(c *CRPCConfig) {`)
+	g.P(`	for {`)
+	g.P(`		response, err := http.Get(fmt.Sprintf("http://%s/api/flags?service_name=%s&is_staging=%t", c.AdminPanelURL, c.ServiceName, c.IsStaging))`)
+	g.P(`		if err != nil {`)
+	g.P(`			fmt.Println(err)`)
+	g.P(`			time.Sleep(10 * time.Second)`)
+	g.P(`			continue`)
+	g.P(`		}`)
+	g.P(`		decoder := json.NewDecoder(response.Body)`)
+	g.P(`		err = decoder.Decode(&c.FlagData)`)
+	g.P(`		if err != nil {`)
+	g.P(`			time.Sleep(10 * time.Second)`)
+	g.P(`			continue`)
+	g.P(`		}`)
+	g.P(`		fmt.Println(c.FlagData)`)
+	g.P(`		time.Sleep(10 * time.Second)`)
+	g.P(`	}`)
+	g.P(`}`)
+	g.P(``)
+	g.P(`func  Register`, service.GoName, `CRPCServer(s grpc.ServiceRegistrar, srv `, service.GoName, `Server, c *CRPCConfig) {`)
+	g.P(`	go readFlags(c)`)
+	g.P(`	s.RegisterService(&`, service.GoName, `_ServiceDesc, srv)`)
+	g.P(`}`)
 }
 
 func toLower(s string) string { return strings.ToLower(s[:1]) + s[1:] }

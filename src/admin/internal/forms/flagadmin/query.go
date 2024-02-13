@@ -10,20 +10,26 @@ import (
 
 func GetFlagsByService(c *gin.Context, conn db.Connection) {
 	serviceName := c.Request.FormValue("service_name")
+	isStaging := c.Request.FormValue("is_staging")
 
-	rows, err := conn.Query("SELECT name, value, type FROM flags WHERE service_name = ?", serviceName)
+	rows, err := conn.Query("SELECT name, value, staging_value, type FROM flags WHERE service_name = ?", serviceName)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
 	flags := gin.H{}
+	valueKey := "value"
+	if isStaging == "true" {
+		valueKey = "staging_value"
+	}
 
 	// Iterate through the results and parse values
 	for _, v := range rows {
 		fmt.Println(v)
-		stringValue := v["value"].(string)
+		stringValue := v[valueKey].(string)
 		stringName := v["name"].(string)
+		fmt.Println(v)
 		switch v["type"].(int64) {
 		case 0:
 			flags[stringName] = stringValue

@@ -17,14 +17,14 @@ func SetChaosStatus(c *gin.Context, conn db.Connection) {
 
 	chaosStatus := row[0]["status"].(string)
 	switch chaosStatus {
-	case "starting":
-		chaosStatus = "getting requests"
-	case "getting requests":
-		chaosStatus = "invoking requests"
-	case "invoking requests":
-		chaosStatus = "gathering results"
-	case "gathering results":
-		chaosStatus = "finished"
+	case "Unknown":
+		chaosStatus = "Starting"
+	case "Starting":
+		chaosStatus = "Getting Requests"
+	case "Getting Requests":
+		chaosStatus = "Invoking Requests"
+	case "Invoking Requests":
+		chaosStatus = "Done"
 	default:
 		c.JSON(500, gin.H{"error": err.Error()})
 		return

@@ -33,7 +33,7 @@ func (g *ChaosGenerator) GetTable(ctx *context.Context) table.Table {
 	formList := chaosTable.GetForm()
 	fieldOptions := getServices(g.Conn)
 	formList.AddField("Service Name", "service_name", db.Text, form.SelectSingle).FieldOptions(fieldOptions).FieldMust()
-	formList.AddField("Status", "status", db.Text, form.Default).FieldHide().FieldDefault("starting")
+	formList.AddField("Status", "status", db.Text, form.Default).FieldHide().FieldDefault("Unknown")
 	formList.AddField("Created At", "created_at", db.Text, form.Default).FieldHide().FieldNow()
 	formList.AddField("Method", "method", db.Text, form.Text)
 

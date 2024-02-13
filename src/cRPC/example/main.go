@@ -40,7 +40,7 @@ func RunServer(db *mongo.Client, conn *grpc.ClientConn) {
 	router := gin.Default()
 	router.POST("/start_Calculate1_chaos", handleCalculate1Chaos(db, conn))
 	router.POST("/start_Calculate2_chaos", handleCalculate2Chaos(db, conn))
-	router.Run(":8080")
+	router.Run(":8082")
 }
 
 func getRequests(db *mongo.Client, methodName string) (*mongo.Cursor, error) {
@@ -56,7 +56,7 @@ func handleCalculate1Chaos(db *mongo.Client, conn *grpc.ClientConn) gin.HandlerF
 	fn := func(c *gin.Context) {
 		chaosID := c.Request.FormValue("id")
 		fmt.Println("Test1", chaosID)
-		get, err := http.Get(fmt.Sprintf("http://127.0.0.1:9033/api/chaoses?chaos_id=%s", chaosID))
+		get, err := http.Get(fmt.Sprintf("http://127.0.0.1:9033/api/chaos?chaos_id=%s", chaosID))
 		fmt.Println(get)
 		if err != nil {
 			fmt.Println(err)
@@ -67,13 +67,13 @@ func handleCalculate1Chaos(db *mongo.Client, conn *grpc.ClientConn) gin.HandlerF
 		fmt.Println("Test2")
 		filters.All(context.Background(), &data)
 		client := calculator.NewCalculatorClient(conn)
-		http.Get(fmt.Sprintf("http://127.0.0.1:9033/api/chaoses?chaos_id=%s", chaosID))
+		http.Get(fmt.Sprintf("http://127.0.0.1:9033/api/chaos?chaos_id=%s", chaosID))
 		for _, v := range data {
 			response, _ := client.Calculate1(context.Background(), v.Request)
 			fmt.Println(response)
 		}
-		http.Get(fmt.Sprintf("http://127.0.0.1:9033/api/chaoses?chaos_id=%s", chaosID))
-		http.Get(fmt.Sprintf("http://127.0.0.1:9033/api/chaoses?chaos_id=%s", chaosID))
+		http.Get(fmt.Sprintf("http://127.0.0.1:9033/api/chaos?chaos_id=%s", chaosID))
+		http.Get(fmt.Sprintf("http://127.0.0.1:9033/api/chaos?chaos_id=%s", chaosID))
 		c.String(http.StatusOK, "Chaos Done")
 	}
 	return fn
