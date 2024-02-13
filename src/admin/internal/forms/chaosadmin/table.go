@@ -38,9 +38,11 @@ func (g *ChaosGenerator) GetTable(ctx *context.Context) table.Table {
 	formList.AddField("Service Name", "service_name", db.Text, form.SelectSingle).FieldOptions(fieldOptions).FieldMust()
 	formList.AddField("Status", "status", db.Text, form.Default).FieldHide().FieldDefault("starting")
 	formList.AddField("Created At", "created_at", db.Text, form.Default).FieldHide().FieldDefault(time.Now().Local().String())
+	formList.AddField("Method", "method", db.Text, form.Text)
 
 	formList.SetTable("chaoses").SetTitle("Chaos").SetDescription("Chaos").SetPostHook(func(values form2.Values) error {
-		_, err := http.Post(fmt.Sprintf("http://localhost:8080/start_Calculate1_chaos?id=%v", values.Get("id")), "application/json", nil)
+		chaosAddress := getChaosAddress(g.Conn, values.Get("service_name"))
+		_, err := http.Post(fmt.Sprintf("http://%s/start_%s_chaos?id=%v", chaosAddress, values.Get("method"), values.Get("id")), "application/json", nil)
 		if err != nil {
 			return err
 		}
@@ -62,4 +64,13 @@ func getServices(conn db.Connection) []types.FieldOption {
 		})
 	}
 	return services
+}
+
+func getChaosAddress(conn db.Connection, name string) string {
+	queryText := fmt.Sprintf("Select chaos_address from services where name=%s", name)
+	query, err := conn.Query(queryText)
+	if err != nil || len(query) != 1 {
+		return ""
+	}
+	return query[0]["chaos_address"].(string)
 }
