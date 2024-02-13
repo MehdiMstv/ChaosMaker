@@ -57,8 +57,11 @@ func serve(cmd *cobra.Command, _ []string) {
 	r.GET("api/flags", func(context *gin.Context) {
 		flagadmin.GetFlagsByService(context, eng.SqliteConnection())
 	})
-	r.GET("api/chaos", func(context *gin.Context) {
+	r.POST("api/chaos", func(context *gin.Context) {
 		chaosadmin.SetChaosStatus(context, eng.SqliteConnection())
+	})
+	r.GET("api/service/staging_address", func(context *gin.Context) {
+		serviceadmin.GetChaosStagingAddress(context, eng.SqliteConnection())
 	})
 
 	_ = r.Run(":9033")
