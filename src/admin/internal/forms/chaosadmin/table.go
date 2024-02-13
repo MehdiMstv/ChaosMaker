@@ -26,6 +26,7 @@ func (g *ChaosGenerator) GetTable(ctx *context.Context) table.Table {
 	info.AddField("Service", "service_name", db.Text).FieldFilterable().FieldSortable()
 	info.AddField("Method", "method", db.Text).FieldFilterable().FieldSortable()
 	info.AddField("Status", "status", db.Text).FieldFilterable().FieldSortable()
+	info.AddField("Result", "result", db.Text).FieldFilterable().FieldSortable()
 	info.AddField("Created At", "created_at", db.Datetime).FieldFilterable().FieldSortable()
 
 	info.SetTable("chaos").SetTitle("Chaos").SetDescription("Chaos").HideEditButton().HideDeleteButton()
