@@ -35,8 +35,10 @@ func serve(cmd *cobra.Command, _ []string) {
 	eng := engine.Default()
 
 	cfg := &config.Config{
-		Databases: provideDatabaseConfig(),
-		UrlPrefix: "admin",
+		Databases:  provideDatabaseConfig(),
+		UrlPrefix:  "admin",
+		Title:      "Chaos Maker",
+		LoginTitle: "Chaos Maker",
 		Store: config.Store{
 			Path:   "./uploads",
 			Prefix: "uploads",
