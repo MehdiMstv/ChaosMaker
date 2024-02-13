@@ -25,6 +25,7 @@ import (
 	"fmt"
 	calculator2 "github.com/MehdiMstv/ChaosMaker/src/cRPC/example/interface/calculator"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"google.golang.org/grpc"
@@ -36,6 +37,11 @@ import (
 const (
 	defaultName = "world"
 )
+
+type LogEntry struct {
+	Timestamp primitive.DateTime              `bson:"timestamp"`
+	Request   *calculator2.Calculator1Request `bson:"request"`
+}
 
 var (
 	addr = flag.String("addr", "localhost:50051", "the address to connect to")
@@ -55,25 +61,24 @@ func main() {
 		log.Fatal(err)
 	}
 	filters, _ := mongoClient.Database("test").Collection("logs").Find(context.Background(), bson.D{})
-	var requests []calculator2.CalculatorRequest
+	var requests []LogEntry
 	err = filters.All(context.Background(), &requests)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	for _, v := range requests {
-		fmt.Println(v.FirstNumber, v.SecondNumber, v.Operation)
+		fmt.Println(v)
 	}
-
 	c := calculator2.NewCalculatorcRPCClient(conn, mongoClient)
 
 	// Contact the server and print out its response.
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.Calculate2(ctx, &calculator2.CalculatorRequest{
-		Operation:    calculator2.CalculatorRequest_SUM,
+	r, err := c.Calculate1(ctx, &calculator2.Calculator1Request{
+		Operation:    calculator2.Calculator1Request_SUM,
 		FirstNumber:  2,
-		SecondNumber: 2,
+		SecondNumber: 3,
 	})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)

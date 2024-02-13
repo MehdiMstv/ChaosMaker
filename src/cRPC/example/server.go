@@ -21,10 +21,11 @@ type server struct {
 }
 
 // SayHello implements helloworld.GreeterServer
-func (s *server) Calculate1(ctx context.Context, in *calculator2.CalculatorRequest) (*calculator2.CalculatorResponse, error) {
-	return &calculator2.CalculatorResponse{Result: 10}, nil
+func (s *server) Calculate1(ctx context.Context, in *calculator2.Calculator1Request) (*calculator2.CalculatorResponse, error) {
+
+	return &calculator2.CalculatorResponse{Result: in.SecondNumber + in.FirstNumber}, nil
 }
-func (s *server) Calculate2(ctx context.Context, in *calculator2.CalculatorRequest) (*calculator2.CalculatorResponse, error) {
+func (s *server) Calculate2(ctx context.Context, in *calculator2.Calculator2Request) (*calculator2.CalculatorResponse, error) {
 	return &calculator2.CalculatorResponse{Result: 10}, nil
 }
 
