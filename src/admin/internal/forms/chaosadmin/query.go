@@ -9,7 +9,7 @@ import (
 func SetChaosStatus(c *gin.Context, conn db.Connection) {
 	chaosID := c.Request.FormValue("chaos_id")
 	fmt.Print(chaosID)
-	row, err := conn.Query("SELECT status FROM chaoses WHERE id = ?", chaosID)
+	row, err := conn.Query("SELECT status FROM chaos WHERE id = ?", chaosID)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -29,7 +29,7 @@ func SetChaosStatus(c *gin.Context, conn db.Connection) {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-	_, err = conn.Query("UPDATE chaoses SET status=? WHERE id=?", chaosStatus, chaosID)
+	_, err = conn.Query("UPDATE chaos SET status=? WHERE id=?", chaosStatus, chaosID)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
