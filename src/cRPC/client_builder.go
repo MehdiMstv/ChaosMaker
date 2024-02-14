@@ -33,6 +33,7 @@ func generateFile(gen *protogen.Plugin, file *protogen.File) {
 	g.P(`    "context"`)
 	g.P(`    "encoding/json"`)
 	g.P(`    "fmt"`)
+	g.P(`    "net/http"`)
 	g.P(`    "time"`)
 	g.P()
 	g.P(`    "go.mongodb.org/mongo-driver/mongo"`)

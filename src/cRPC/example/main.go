@@ -11,6 +11,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -76,8 +77,15 @@ func handleCalculate1Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", nil)
 
 		resultData := make(map[string]int)
+		resultData["Success"] = 0
+		totalRequests := len(data)
+
 		for _, v := range data {
+			startingTime := time.Now().Nanosecond()
 			_, err := client.Calculate1(context.Background(), v.Request)
+			finishedTime := time.Now().Nanosecond()
+			resultData["Average Response Time"] = resultData["Average Response Time"] + finishedTime - startingTime
+
 			if err != nil {
 				if s, ok := status.FromError(err); ok {
 					resultData[s.Code().String()] = resultData[s.Code().String()] + 1
@@ -88,6 +96,9 @@ func handleCalculate1Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 			}
 			resultData["Success"] = resultData["Success"] + 1
 		}
+
+		resultData["Total Requests"] = totalRequests
+		resultData["Average Response Time"] = resultData["Average Response Time"] / totalRequests
 
 		jsonString, _ := json.Marshal(resultData)
 		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", bytes.NewBuffer(jsonString))
@@ -115,8 +126,15 @@ func handleCalculate2Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", nil)
 
 		resultData := make(map[string]int)
+		resultData["Success"] = 0
+		totalRequests := len(data)
+
 		for _, v := range data {
+			startingTime := time.Now().Nanosecond()
 			_, err := client.Calculate2(context.Background(), v.Request)
+			finishedTime := time.Now().Nanosecond()
+			resultData["Average Response Time"] = resultData["Average Response Time"] + finishedTime - startingTime
+
 			if err != nil {
 				if s, ok := status.FromError(err); ok {
 					resultData[s.Code().String()] = resultData[s.Code().String()] + 1
@@ -127,6 +145,9 @@ func handleCalculate2Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 			}
 			resultData["Success"] = resultData["Success"] + 1
 		}
+
+		resultData["Total Requests"] = totalRequests
+		resultData["Average Response Time"] = resultData["Average Response Time"] / totalRequests
 
 		jsonString, _ := json.Marshal(resultData)
 		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", bytes.NewBuffer(jsonString))
