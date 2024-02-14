@@ -71,6 +71,7 @@ func generateChaosFile(gen *protogen.Plugin, file *protogen.File) {
 	for _, method := range service.Methods {
 		g.P("	router.POST(\"/start_", method.GoName, "_chaos\", handle", method.GoName, "Chaos(db, conn, c))")
 	}
+	g.P(`		router.GET("/methods", getMethods)`)
 	g.P("	err := router.Run(\":\" + c.Port)")
 	g.P("	if err != nil {")
 	g.P("		return ")
@@ -136,6 +137,14 @@ func generateChaosFile(gen *protogen.Plugin, file *protogen.File) {
 		g.P("	}")
 		g.P()
 	}
+	g.P("func getMethods(c *gin.Context) {")
+	g.P("	var methods []string")
+	for _, method := range service.Methods {
+		g.P(`	methods = append(methods, "`, method.GoName, `")`)
+	}
+	g.P(`	c.JSON(200, gin.H{"methods": methods})`)
+	g.P("}")
+	g.P()
 	g.P("func getStagingAddress(c *config) error {")
 	g.P(`	response, err := http.Get(fmt.Sprintf("http://%s/api/service/staging_address?name=%s", c.ControlPlaneURL, c.ServiceName))`)
 	g.P("	if err != nil {")
