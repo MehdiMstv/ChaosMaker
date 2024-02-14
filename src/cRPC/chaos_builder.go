@@ -22,7 +22,7 @@ func main() {
 }
 
 func generateChaosFile(gen *protogen.Plugin, file *protogen.File) {
-	filename := file.GeneratedFilenamePrefix + "_chaos.pb.go"
+	filename := file.GeneratedFilenamePrefix + "_chaos.go"
 	g := gen.NewGeneratedFile(filename, file.GoImportPath)
 
 	service := file.Services[0]
@@ -31,11 +31,14 @@ func generateChaosFile(gen *protogen.Plugin, file *protogen.File) {
 	g.P("package ", file.GoPackageName)
 	g.P()
 	g.P("import (")
+	g.P(`    "bytes"`)
 	g.P(`    "context"`)
 	g.P(`    "encoding/json"`)
 	g.P(`    "fmt"`)
+	g.P(`    "io"`)
 	g.P(`    "log"`)
 	g.P(`    "net/http"`)
+	g.P(`    "time"`)
 	g.P()
 	g.P(`    "github.com/gin-gonic/gin"`)
 	g.P(`    "go.mongodb.org/mongo-driver/bson"`)
@@ -101,8 +104,15 @@ func generateChaosFile(gen *protogen.Plugin, file *protogen.File) {
 		g.P(`		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", nil)`)
 		g.P()
 		g.P(`		resultData := make(map[string]int)`)
+		g.P(`		resultData["Success"] = 0`)
+		g.P("		totalRequests := len(data)")
+		g.P()
 		g.P("		for _, v := range data {")
+		g.P("			startingTime := time.Now().Nanosecond()")
 		g.P("			_, err := client.", method.GoName, "(context.Background(), v.Request)")
+		g.P("			finishedTime := time.Now().Nanosecond()")
+		g.P(`			resultData["Average Response Time"] = resultData["Average Response Time"] + finishedTime - startingTime`)
+		g.P()
 		g.P("			if err != nil {")
 		g.P("				if s, ok := status.FromError(err); ok {")
 		g.P("					resultData[s.Code().String()] = resultData[s.Code().String()] + 1")
@@ -113,6 +123,9 @@ func generateChaosFile(gen *protogen.Plugin, file *protogen.File) {
 		g.P("			}")
 		g.P(`			resultData["Success"] = resultData["Success"] + 1`)
 		g.P("		}")
+		g.P()
+		g.P(`		resultData["Total Requests"] = totalRequests`)
+		g.P(`		resultData["Average Response Time"] = resultData["Average Response Time"] / totalRequests`)
 		g.P()
 		g.P("		jsonString, _ := json.Marshal(resultData)")
 		g.P(`		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", bytes.NewBuffer(jsonString))`)
