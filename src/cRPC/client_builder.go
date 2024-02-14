@@ -99,7 +99,7 @@ func generateService(g *protogen.GeneratedFile, service *protogen.Service) {
 func generateServer(g *protogen.GeneratedFile, service *protogen.Service) {
 	g.P(`func readFlags(c *CRPCConfig) {`)
 	g.P(`	for {`)
-	g.P(`		response, err := http.Get(fmt.Sprintf("http://%s/api/flags?service_name=%s&is_staging=%t", c.AdminPanelURL, c.ServiceName, c.IsStaging))`)
+	g.P(`		response, err := http.Get(fmt.Sprintf("http://%s/api/flags?service_name=%s&is_staging=%t", c.ControlPlaneURL, c.ServiceName, c.IsStaging))`)
 	g.P(`		if err != nil {`)
 	g.P(`			fmt.Println(err)`)
 	g.P(`			time.Sleep(10 * time.Second)`)

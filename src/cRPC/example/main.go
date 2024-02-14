@@ -24,7 +24,7 @@ import (
 
 type config struct {
 	LoggerMongodbURI string
-	AdminPanelURL    string
+	ControlPlaneURL  string
 	StagingAddress   string `json:"staging_address"`
 	ServiceName      string
 	Port             string
@@ -63,7 +63,7 @@ func handleCalculate1Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 		chaosID := c.Request.FormValue("id")
 		var data []calculate1RequestEntry
 
-		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.AdminPanelURL, chaosID), "application/json", nil)
+		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", nil)
 
 		filters, _ := getRequests(db, "Calculate1")
 		err := filters.All(context.Background(), &data)
@@ -73,7 +73,7 @@ func handleCalculate1Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 		}
 
 		client := calculator.NewCalculatorClient(conn)
-		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.AdminPanelURL, chaosID), "application/json", nil)
+		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", nil)
 
 		resultData := make(map[string]int)
 		for _, v := range data {
@@ -90,7 +90,7 @@ func handleCalculate1Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 		}
 
 		jsonString, _ := json.Marshal(resultData)
-		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.AdminPanelURL, chaosID), "application/json", bytes.NewBuffer(jsonString))
+		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", bytes.NewBuffer(jsonString))
 		c.String(http.StatusOK, "Chaos Done")
 	}
 
@@ -102,7 +102,7 @@ func handleCalculate2Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 		chaosID := c.Request.FormValue("id")
 		var data []calculate2RequestEntry
 
-		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.AdminPanelURL, chaosID), "application/json", nil)
+		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", nil)
 
 		filters, _ := getRequests(db, "Calculate2")
 		err := filters.All(context.Background(), &data)
@@ -112,7 +112,7 @@ func handleCalculate2Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 		}
 
 		client := calculator.NewCalculatorClient(conn)
-		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.AdminPanelURL, chaosID), "application/json", nil)
+		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", nil)
 
 		resultData := make(map[string]int)
 		for _, v := range data {
@@ -129,7 +129,7 @@ func handleCalculate2Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 		}
 
 		jsonString, _ := json.Marshal(resultData)
-		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.AdminPanelURL, chaosID), "application/json", bytes.NewBuffer(jsonString))
+		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", bytes.NewBuffer(jsonString))
 		c.String(http.StatusOK, "Chaos Done")
 	}
 
@@ -137,7 +137,7 @@ func handleCalculate2Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 }
 
 func getStagingAddress(c *config) error {
-	response, err := http.Get(fmt.Sprintf("http://%s/api/service/staging_address?name=%s", c.AdminPanelURL, c.ServiceName))
+	response, err := http.Get(fmt.Sprintf("http://%s/api/service/staging_address?name=%s", c.ControlPlaneURL, c.ServiceName))
 	if err != nil {
 		return err
 	}
@@ -162,7 +162,7 @@ func getStagingAddress(c *config) error {
 func main() {
 	c := &config{
 		LoggerMongodbURI: "mongodb://127.0.0.1:27017/",
-		AdminPanelURL:    "127.0.0.1:9033",
+		ControlPlaneURL:  "127.0.0.1:9033",
 		ServiceName:      "chaos",
 		Port:             "8082",
 	}
