@@ -13,8 +13,8 @@ type FlagData struct {
 }
 
 type CRPCConfig struct {
-	FlagData      *FlagData
-	IsStaging     bool
-	ServiceName   string
-	AdminPanelURL string
+	FlagData        *FlagData
+	IsStaging       bool
+	ServiceName     string
+	ControlPlaneURL string
 }

@@ -39,10 +39,10 @@ func main() {
 	s := grpc.NewServer()
 	reflection.Register(s)
 	c := calculator2.CRPCConfig{
-		FlagData:      &calculator2.FlagData{},
-		IsStaging:     false,
-		ServiceName:   "chaos",
-		AdminPanelURL: "127.0.0.1:9033",
+		FlagData:        &calculator2.FlagData{},
+		IsStaging:       false,
+		ServiceName:     "chaos",
+		ControlPlaneURL: "127.0.0.1:9033",
 	}
 	calculator2.RegisterCalculatorCRPCServer(s, &server{}, &c)
 	log.Printf("server listening at %v", lis.Addr())

@@ -76,7 +76,7 @@ func (s *calculatorcRPCClient) Calculate2(ctx context.Context, req *Calculator2R
 
 func readFlags(c *CRPCConfig) {
 	for {
-		response, err := http.Get(fmt.Sprintf("http://%s/api/flags?service_name=%s&is_staging=%t", c.AdminPanelURL, c.ServiceName, c.IsStaging))
+		response, err := http.Get(fmt.Sprintf("http://%s/api/flags?service_name=%s&is_staging=%t", c.ControlPlaneURL, c.ServiceName, c.IsStaging))
 		if err != nil {
 			fmt.Println(err)
 			time.Sleep(10 * time.Second)
