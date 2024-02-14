@@ -1,6 +1,7 @@
 package chaosadmin
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/GoAdminGroup/go-admin/context"
@@ -9,11 +10,17 @@ import (
 	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/table"
 	"github.com/GoAdminGroup/go-admin/template/types"
 	"github.com/GoAdminGroup/go-admin/template/types/form"
+	"io"
 	"net/http"
+	"slices"
 )
 
 type ChaosGenerator struct {
 	Conn db.Connection
+}
+
+type methods struct {
+	Name []string `json:"methods"`
 }
 
 func (g *ChaosGenerator) GetTable(ctx *context.Context) table.Table {
@@ -36,7 +43,13 @@ func (g *ChaosGenerator) GetTable(ctx *context.Context) table.Table {
 	formList.AddField("Service Name", "service_name", db.Text, form.SelectSingle).FieldOptions(fieldOptions).FieldMust()
 	formList.AddField("Status", "status", db.Text, form.Default).FieldHide().FieldDefault("Unknown")
 	formList.AddField("Created At", "created_at", db.Text, form.Default).FieldHide().FieldNow()
-	formList.AddField("Method", "method", db.Text, form.Text)
+	formList.AddField("Method", "method", db.Text, form.Text).SetPostValidator(func(values form2.Values) error {
+		methods := getServiceMethods(g.Conn, values.Get("service_name"))
+		if !slices.Contains(methods, values.Get("method")) {
+			return errors.New("invalid method")
+		}
+		return nil
+	})
 
 	formList.SetTable("chaos").SetTitle("Chaos").SetDescription("Chaos").SetPostHook(func(values form2.Values) error {
 		chaosAddress := getChaosAddress(g.Conn, values.Get("service_name"))
@@ -74,4 +87,28 @@ func getChaosAddress(conn db.Connection, name string) string {
 		return ""
 	}
 	return query[0]["chaos_address"].(string)
+}
+
+func getServiceMethods(conn db.Connection, name string) []string {
+	chaosAddress := getChaosAddress(conn, name)
+	if chaosAddress == "" {
+		return nil
+	}
+
+	response, err := http.Get("http://" + chaosAddress + "/methods")
+	if err != nil {
+		return nil
+	}
+	bytes, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil
+	}
+
+	methodNames := &methods{}
+	err = json.Unmarshal(bytes, &methodNames)
+	if err != nil {
+		return nil
+	}
+	fmt.Println(methodNames)
+	return methodNames.Name
 }

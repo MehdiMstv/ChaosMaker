@@ -45,6 +45,7 @@ func RunServer(db *mongo.Client, conn *grpc.ClientConn, c *config) {
 	router := gin.Default()
 	router.POST("/start_Calculate1_chaos", handleCalculate1Chaos(db, conn, c))
 	router.POST("/start_Calculate2_chaos", handleCalculate2Chaos(db, conn, c))
+	router.GET("/methods", getMethods)
 	err := router.Run(":" + c.Port)
 	if err != nil {
 		return
@@ -155,6 +156,13 @@ func handleCalculate2Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 	}
 
 	return fn
+}
+
+func getMethods(c *gin.Context) {
+	var methods []string
+	methods = append(methods, "Calculate1")
+	methods = append(methods, "Calculate2")
+	c.JSON(200, gin.H{"methods": methods})
 }
 
 func getStagingAddress(c *config) error {
