@@ -13,19 +13,19 @@ import (
 	"google.golang.org/grpc"
 )
 
-type calculate1RequestEntry struct {
-	Timestamp time.Time           `bson:"timestamp"`
-	Request   *Calculator1Request `bson:"request"`
+type calculateRequestEntry struct {
+	Timestamp time.Time         `bson:"timestamp"`
+	Request   *CalculateRequest `bson:"request"`
 }
 
-type calculate2RequestEntry struct {
-	Timestamp time.Time           `bson:"timestamp"`
-	Request   *Calculator2Request `bson:"request"`
+type getRandomRequestEntry struct {
+	Timestamp time.Time         `bson:"timestamp"`
+	Request   *GetRandomRequest `bson:"request"`
 }
 
 type CalculatorcRPCClient interface {
-	Calculate1(ctx context.Context, in *Calculator1Request, opts ...grpc.CallOption) (*CalculatorResponse, error)
-	Calculate2(ctx context.Context, in *Calculator2Request, opts ...grpc.CallOption) (*CalculatorResponse, error)
+	Calculate(ctx context.Context, in *CalculateRequest, opts ...grpc.CallOption) (*CalculateResponse, error)
+	GetRandom(ctx context.Context, in *GetRandomRequest, opts ...grpc.CallOption) (*GetRandomResponse, error)
 }
 type calculatorcRPCClient struct {
 	client CalculatorClient
@@ -40,15 +40,15 @@ func NewCalculatorcRPCClient(cc grpc.ClientConnInterface, db *mongo.Client) Calc
 	}
 }
 
-func (s *calculatorcRPCClient) Calculate1(ctx context.Context, req *Calculator1Request, opts ...grpc.CallOption) (*CalculatorResponse, error) {
+func (s *calculatorcRPCClient) Calculate(ctx context.Context, req *CalculateRequest, opts ...grpc.CallOption) (*CalculateResponse, error) {
 	// Log the request to MongoDB async
-	go s.db.Database("Calculator").Collection("Calculate1").InsertOne(ctx, &calculate1RequestEntry{
+	go s.db.Database("Calculator").Collection("Calculate").InsertOne(ctx, &calculateRequestEntry{
 		Timestamp: time.Now(),
 		Request:   req,
 	})
 
 	// Invoke the original RPC method
-	resp, err := s.client.Calculate1(ctx, req)
+	resp, err := s.client.Calculate(ctx, req)
 
 	// Handle response and error
 	if err != nil {
@@ -57,15 +57,15 @@ func (s *calculatorcRPCClient) Calculate1(ctx context.Context, req *Calculator1R
 	return resp, nil
 }
 
-func (s *calculatorcRPCClient) Calculate2(ctx context.Context, req *Calculator2Request, opts ...grpc.CallOption) (*CalculatorResponse, error) {
+func (s *calculatorcRPCClient) GetRandom(ctx context.Context, req *GetRandomRequest, opts ...grpc.CallOption) (*GetRandomResponse, error) {
 	// Log the request to MongoDB async
-	go s.db.Database("Calculator").Collection("Calculate2").InsertOne(ctx, &calculate2RequestEntry{
+	go s.db.Database("Calculator").Collection("GetRandom").InsertOne(ctx, &getRandomRequestEntry{
 		Timestamp: time.Now(),
 		Request:   req,
 	})
 
 	// Invoke the original RPC method
-	resp, err := s.client.Calculate2(ctx, req)
+	resp, err := s.client.GetRandom(ctx, req)
 
 	// Handle response and error
 	if err != nil {

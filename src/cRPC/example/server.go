@@ -2,12 +2,17 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
-	calculator2 "github.com/MehdiMstv/ChaosMaker/src/cRPC/example/interface/calculator"
-	"google.golang.org/grpc/reflection"
 	"log"
+	"math/rand"
 	"net"
+	"time"
+
+	"google.golang.org/grpc/reflection"
+
+	calculator "github.com/MehdiMstv/ChaosMaker/src/cRPC/example/interface/calculator"
 
 	"google.golang.org/grpc"
 )
@@ -16,18 +21,30 @@ var (
 	port = flag.Int("port", 50052, "The server port")
 )
 
-// server is used to implement helloworld.GreeterServer.
 type server struct {
-	calculator2.UnimplementedCalculatorServer
+	calculator.UnimplementedCalculatorServer
+	flags *calculator.FlagData
 }
 
-// SayHello implements helloworld.GreeterServer
-func (s *server) Calculate1(ctx context.Context, in *calculator2.Calculator1Request) (*calculator2.CalculatorResponse, error) {
-
-	return &calculator2.CalculatorResponse{Result: in.SecondNumber + in.FirstNumber}, nil
+func (s *server) Calculate(ctx context.Context, in *calculator.CalculateRequest) (*calculator.CalculateResponse, error) {
+	result := int64(0)
+	switch in.GetOperation().String() {
+	case calculator.CalculateRequest_SUM.String():
+		result = in.GetFirstNumber() + in.GetSecondNumber()
+	case calculator.CalculateRequest_SUB.String():
+		result = in.GetFirstNumber() - in.GetSecondNumber()
+	case calculator.CalculateRequest_MUL.String():
+		result = in.GetFirstNumber() * in.GetSecondNumber()
+	case calculator.CalculateRequest_DIV.String():
+		result = in.GetFirstNumber() / in.GetSecondNumber()
+	default:
+		return nil, errors.New("invalid operation")
+	}
+	return &calculator.CalculateResponse{Result: result}, nil
 }
-func (s *server) Calculate2(ctx context.Context, in *calculator2.Calculator2Request) (*calculator2.CalculatorResponse, error) {
-	return &calculator2.CalculatorResponse{Result: 10}, nil
+func (s *server) GetRandom(ctx context.Context, in *calculator.GetRandomRequest) (*calculator.GetRandomResponse, error) {
+	time.Sleep(s.flags.SleepTime * time.Second)
+	return &calculator.GetRandomResponse{Random: int64(rand.Int())}, nil
 }
 
 func main() {
@@ -38,13 +55,13 @@ func main() {
 	}
 	s := grpc.NewServer()
 	reflection.Register(s)
-	c := calculator2.CRPCConfig{
-		FlagData:        &calculator2.FlagData{},
-		IsStaging:       false,
-		ServiceName:     "chaos",
+	c := calculator.CRPCConfig{
+		FlagData:        &calculator.FlagData{},
+		IsStaging:       true,
+		ServiceName:     "Calculator",
 		ControlPlaneURL: "127.0.0.1:9033",
 	}
-	calculator2.RegisterCalculatorCRPCServer(s, &server{}, &c)
+	calculator.RegisterCalculatorCRPCServer(s, &server{flags: c.FlagData}, &c)
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

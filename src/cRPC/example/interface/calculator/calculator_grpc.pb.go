@@ -22,8 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CalculatorClient interface {
-	Calculate1(ctx context.Context, in *Calculator1Request, opts ...grpc.CallOption) (*CalculatorResponse, error)
-	Calculate2(ctx context.Context, in *Calculator2Request, opts ...grpc.CallOption) (*CalculatorResponse, error)
+	Calculate(ctx context.Context, in *CalculateRequest, opts ...grpc.CallOption) (*CalculateResponse, error)
+	GetRandom(ctx context.Context, in *GetRandomRequest, opts ...grpc.CallOption) (*GetRandomResponse, error)
 }
 
 type calculatorClient struct {
@@ -34,18 +34,18 @@ func NewCalculatorClient(cc grpc.ClientConnInterface) CalculatorClient {
 	return &calculatorClient{cc}
 }
 
-func (c *calculatorClient) Calculate1(ctx context.Context, in *Calculator1Request, opts ...grpc.CallOption) (*CalculatorResponse, error) {
-	out := new(CalculatorResponse)
-	err := c.cc.Invoke(ctx, "/protocols.Calculator/Calculate1", in, out, opts...)
+func (c *calculatorClient) Calculate(ctx context.Context, in *CalculateRequest, opts ...grpc.CallOption) (*CalculateResponse, error) {
+	out := new(CalculateResponse)
+	err := c.cc.Invoke(ctx, "/protocols.Calculator/Calculate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *calculatorClient) Calculate2(ctx context.Context, in *Calculator2Request, opts ...grpc.CallOption) (*CalculatorResponse, error) {
-	out := new(CalculatorResponse)
-	err := c.cc.Invoke(ctx, "/protocols.Calculator/Calculate2", in, out, opts...)
+func (c *calculatorClient) GetRandom(ctx context.Context, in *GetRandomRequest, opts ...grpc.CallOption) (*GetRandomResponse, error) {
+	out := new(GetRandomResponse)
+	err := c.cc.Invoke(ctx, "/protocols.Calculator/GetRandom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,8 +56,8 @@ func (c *calculatorClient) Calculate2(ctx context.Context, in *Calculator2Reques
 // All implementations must embed UnimplementedCalculatorServer
 // for forward compatibility
 type CalculatorServer interface {
-	Calculate1(context.Context, *Calculator1Request) (*CalculatorResponse, error)
-	Calculate2(context.Context, *Calculator2Request) (*CalculatorResponse, error)
+	Calculate(context.Context, *CalculateRequest) (*CalculateResponse, error)
+	GetRandom(context.Context, *GetRandomRequest) (*GetRandomResponse, error)
 	mustEmbedUnimplementedCalculatorServer()
 }
 
@@ -65,11 +65,11 @@ type CalculatorServer interface {
 type UnimplementedCalculatorServer struct {
 }
 
-func (UnimplementedCalculatorServer) Calculate1(context.Context, *Calculator1Request) (*CalculatorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Calculate1 not implemented")
+func (UnimplementedCalculatorServer) Calculate(context.Context, *CalculateRequest) (*CalculateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Calculate not implemented")
 }
-func (UnimplementedCalculatorServer) Calculate2(context.Context, *Calculator2Request) (*CalculatorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Calculate2 not implemented")
+func (UnimplementedCalculatorServer) GetRandom(context.Context, *GetRandomRequest) (*GetRandomResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRandom not implemented")
 }
 func (UnimplementedCalculatorServer) mustEmbedUnimplementedCalculatorServer() {}
 
@@ -84,38 +84,38 @@ func RegisterCalculatorServer(s grpc.ServiceRegistrar, srv CalculatorServer) {
 	s.RegisterService(&Calculator_ServiceDesc, srv)
 }
 
-func _Calculator_Calculate1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Calculator1Request)
+func _Calculator_Calculate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CalculateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CalculatorServer).Calculate1(ctx, in)
+		return srv.(CalculatorServer).Calculate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protocols.Calculator/Calculate1",
+		FullMethod: "/protocols.Calculator/Calculate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CalculatorServer).Calculate1(ctx, req.(*Calculator1Request))
+		return srv.(CalculatorServer).Calculate(ctx, req.(*CalculateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Calculator_Calculate2_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Calculator2Request)
+func _Calculator_GetRandom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRandomRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CalculatorServer).Calculate2(ctx, in)
+		return srv.(CalculatorServer).GetRandom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protocols.Calculator/Calculate2",
+		FullMethod: "/protocols.Calculator/GetRandom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CalculatorServer).Calculate2(ctx, req.(*Calculator2Request))
+		return srv.(CalculatorServer).GetRandom(ctx, req.(*GetRandomRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -128,12 +128,12 @@ var Calculator_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*CalculatorServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Calculate1",
-			Handler:    _Calculator_Calculate1_Handler,
+			MethodName: "Calculate",
+			Handler:    _Calculator_Calculate_Handler,
 		},
 		{
-			MethodName: "Calculate2",
-			Handler:    _Calculator_Calculate2_Handler,
+			MethodName: "GetRandom",
+			Handler:    _Calculator_GetRandom_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

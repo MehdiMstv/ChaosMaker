@@ -7,7 +7,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/MehdiMstv/ChaosMaker/src/cRPC/example/interface/calculator"
 	"io"
 	"log"
 	"net/http"
@@ -21,6 +20,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
+
+	"github.com/MehdiMstv/ChaosMaker/src/cRPC/example/interface/calculator"
 )
 
 type config struct {
@@ -31,20 +32,20 @@ type config struct {
 	Port             string
 }
 
-type calculate1RequestEntry struct {
-	Timestamp primitive.DateTime             `bson:"timestamp"`
-	Request   *calculator.Calculator1Request `bson:"request"`
+type calculateRequestEntry struct {
+	Timestamp primitive.DateTime           `bson:"timestamp"`
+	Request   *calculator.CalculateRequest `bson:"request"`
 }
 
-type calculate2RequestEntry struct {
-	Timestamp primitive.DateTime             `bson:"timestamp"`
-	Request   *calculator.Calculator2Request `bson:"request"`
+type getRandomRequestEntry struct {
+	Timestamp primitive.DateTime           `bson:"timestamp"`
+	Request   *calculator.GetRandomRequest `bson:"request"`
 }
 
 func RunServer(db *mongo.Client, conn *grpc.ClientConn, c *config) {
 	router := gin.Default()
-	router.POST("/start_Calculate1_chaos", handleCalculate1Chaos(db, conn, c))
-	router.POST("/start_Calculate2_chaos", handleCalculate2Chaos(db, conn, c))
+	router.POST("/start_Calculate_chaos", handleCalculateChaos(db, conn, c))
+	router.POST("/start_GetRandom_chaos", handleGetRandomChaos(db, conn, c))
 	router.GET("/methods", getMethods)
 	err := router.Run(":" + c.Port)
 	if err != nil {
@@ -60,14 +61,14 @@ func getRequests(db *mongo.Client, methodName string) (*mongo.Cursor, error) {
 	return requests, nil
 }
 
-func handleCalculate1Chaos(db *mongo.Client, conn *grpc.ClientConn, config *config) gin.HandlerFunc {
+func handleCalculateChaos(db *mongo.Client, conn *grpc.ClientConn, config *config) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 		chaosID := c.Request.FormValue("id")
-		var data []calculate1RequestEntry
+		var data []calculateRequestEntry
 
 		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", nil)
 
-		filters, _ := getRequests(db, "Calculate1")
+		filters, _ := getRequests(db, "Calculate")
 		err := filters.All(context.Background(), &data)
 		if err != nil {
 			c.JSON(500, gin.H{"error": err.Error()})
@@ -78,15 +79,8 @@ func handleCalculate1Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", nil)
 
 		resultData := make(map[string]int)
-		resultData["Success"] = 0
-		totalRequests := len(data)
-
 		for _, v := range data {
-			startingTime := time.Now().Nanosecond()
-			_, err := client.Calculate1(context.Background(), v.Request)
-			finishedTime := time.Now().Nanosecond()
-			resultData["Average Response Time"] = resultData["Average Response Time"] + finishedTime - startingTime
-
+			_, err := client.Calculate(context.Background(), v.Request)
 			if err != nil {
 				if s, ok := status.FromError(err); ok {
 					resultData[s.Code().String()] = resultData[s.Code().String()] + 1
@@ -97,9 +91,6 @@ func handleCalculate1Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 			}
 			resultData["Success"] = resultData["Success"] + 1
 		}
-
-		resultData["Total Requests"] = totalRequests
-		resultData["Average Response Time"] = resultData["Average Response Time"] / totalRequests
 
 		jsonString, _ := json.Marshal(resultData)
 		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", bytes.NewBuffer(jsonString))
@@ -109,14 +100,14 @@ func handleCalculate1Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 	return fn
 }
 
-func handleCalculate2Chaos(db *mongo.Client, conn *grpc.ClientConn, config *config) gin.HandlerFunc {
+func handleGetRandomChaos(db *mongo.Client, conn *grpc.ClientConn, config *config) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 		chaosID := c.Request.FormValue("id")
-		var data []calculate2RequestEntry
+		var data []getRandomRequestEntry
 
 		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", nil)
 
-		filters, _ := getRequests(db, "Calculate2")
+		filters, _ := getRequests(db, "GetRandom")
 		err := filters.All(context.Background(), &data)
 		if err != nil {
 			c.JSON(500, gin.H{"error": err.Error()})
@@ -127,15 +118,11 @@ func handleCalculate2Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", nil)
 
 		resultData := make(map[string]int)
-		resultData["Success"] = 0
-		totalRequests := len(data)
-
 		for _, v := range data {
-			startingTime := time.Now().Nanosecond()
-			_, err := client.Calculate2(context.Background(), v.Request)
-			finishedTime := time.Now().Nanosecond()
-			resultData["Average Response Time"] = resultData["Average Response Time"] + finishedTime - startingTime
-
+			ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+			defer cancel()
+			_, err := client.GetRandom(ctx, v.Request)
+			fmt.Println(err)
 			if err != nil {
 				if s, ok := status.FromError(err); ok {
 					resultData[s.Code().String()] = resultData[s.Code().String()] + 1
@@ -146,9 +133,6 @@ func handleCalculate2Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 			}
 			resultData["Success"] = resultData["Success"] + 1
 		}
-
-		resultData["Total Requests"] = totalRequests
-		resultData["Average Response Time"] = resultData["Average Response Time"] / totalRequests
 
 		jsonString, _ := json.Marshal(resultData)
 		http.Post(fmt.Sprintf("http://%s/api/chaos?id=%s", config.ControlPlaneURL, chaosID), "application/json", bytes.NewBuffer(jsonString))
@@ -160,8 +144,8 @@ func handleCalculate2Chaos(db *mongo.Client, conn *grpc.ClientConn, config *conf
 
 func getMethods(c *gin.Context) {
 	var methods []string
-	methods = append(methods, "Calculate1")
-	methods = append(methods, "Calculate2")
+	methods = append(methods, "Calculate")
+	methods = append(methods, "GetRandom")
 	c.JSON(200, gin.H{"methods": methods})
 }
 
@@ -192,7 +176,7 @@ func main() {
 	c := &config{
 		LoggerMongodbURI: "mongodb://127.0.0.1:27017/",
 		ControlPlaneURL:  "127.0.0.1:9033",
-		ServiceName:      "chaos",
+		ServiceName:      "Calculator",
 		Port:             "8082",
 	}
 

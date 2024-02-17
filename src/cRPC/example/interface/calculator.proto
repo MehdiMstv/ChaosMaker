@@ -4,32 +4,31 @@ package protocols;
 
 option go_package = "example/interface/calculator";
 
-message Calculator1Request {
+message CalculateRequest {
   enum Operation {
     UNKNOWN = 0;
     SUM = 1;
+    SUB = 2;
+    MUL = 3;
+    DIV = 4;
   }
   Operation operation = 1;
   int64 first_number = 2;
   int64 second_number = 3;
 }
 
-message Calculator2Request {
-  enum Operation {
-    UNKNOWN = 0;
-    Multiply = 1;
-  }
-  Operation op = 1;
-  int64 first = 2;
-  int64 second = 3;
-}
-
-message CalculatorResponse {
+message CalculateResponse {
   int64 result = 1;
 }
 
+message GetRandomRequest {}
+
+message GetRandomResponse {
+  int64 random = 1;
+}
+
 service Calculator{
-  rpc Calculate1(Calculator1Request) returns (CalculatorResponse);
-  rpc Calculate2(Calculator2Request) returns (CalculatorResponse);
+  rpc Calculate(CalculateRequest) returns (CalculateResponse);
+  rpc GetRandom(GetRandomRequest) returns (GetRandomResponse);
 }
 
