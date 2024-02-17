@@ -20,110 +20,73 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Calculator1Request_Operation int32
+type CalculateRequest_Operation int32
 
 const (
-	Calculator1Request_UNKNOWN Calculator1Request_Operation = 0
-	Calculator1Request_SUM     Calculator1Request_Operation = 1
+	CalculateRequest_UNKNOWN CalculateRequest_Operation = 0
+	CalculateRequest_SUM     CalculateRequest_Operation = 1
+	CalculateRequest_SUB     CalculateRequest_Operation = 2
+	CalculateRequest_MUL     CalculateRequest_Operation = 3
+	CalculateRequest_DIV     CalculateRequest_Operation = 4
 )
 
-// Enum value maps for Calculator1Request_Operation.
+// Enum value maps for CalculateRequest_Operation.
 var (
-	Calculator1Request_Operation_name = map[int32]string{
+	CalculateRequest_Operation_name = map[int32]string{
 		0: "UNKNOWN",
 		1: "SUM",
+		2: "SUB",
+		3: "MUL",
+		4: "DIV",
 	}
-	Calculator1Request_Operation_value = map[string]int32{
+	CalculateRequest_Operation_value = map[string]int32{
 		"UNKNOWN": 0,
 		"SUM":     1,
+		"SUB":     2,
+		"MUL":     3,
+		"DIV":     4,
 	}
 )
 
-func (x Calculator1Request_Operation) Enum() *Calculator1Request_Operation {
-	p := new(Calculator1Request_Operation)
+func (x CalculateRequest_Operation) Enum() *CalculateRequest_Operation {
+	p := new(CalculateRequest_Operation)
 	*p = x
 	return p
 }
 
-func (x Calculator1Request_Operation) String() string {
+func (x CalculateRequest_Operation) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (Calculator1Request_Operation) Descriptor() protoreflect.EnumDescriptor {
+func (CalculateRequest_Operation) Descriptor() protoreflect.EnumDescriptor {
 	return file_example_interface_calculator_proto_enumTypes[0].Descriptor()
 }
 
-func (Calculator1Request_Operation) Type() protoreflect.EnumType {
+func (CalculateRequest_Operation) Type() protoreflect.EnumType {
 	return &file_example_interface_calculator_proto_enumTypes[0]
 }
 
-func (x Calculator1Request_Operation) Number() protoreflect.EnumNumber {
+func (x CalculateRequest_Operation) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use Calculator1Request_Operation.Descriptor instead.
-func (Calculator1Request_Operation) EnumDescriptor() ([]byte, []int) {
+// Deprecated: Use CalculateRequest_Operation.Descriptor instead.
+func (CalculateRequest_Operation) EnumDescriptor() ([]byte, []int) {
 	return file_example_interface_calculator_proto_rawDescGZIP(), []int{0, 0}
 }
 
-type Calculator2Request_Operation int32
-
-const (
-	Calculator2Request_UNKNOWN  Calculator2Request_Operation = 0
-	Calculator2Request_Multiply Calculator2Request_Operation = 1
-)
-
-// Enum value maps for Calculator2Request_Operation.
-var (
-	Calculator2Request_Operation_name = map[int32]string{
-		0: "UNKNOWN",
-		1: "Multiply",
-	}
-	Calculator2Request_Operation_value = map[string]int32{
-		"UNKNOWN":  0,
-		"Multiply": 1,
-	}
-)
-
-func (x Calculator2Request_Operation) Enum() *Calculator2Request_Operation {
-	p := new(Calculator2Request_Operation)
-	*p = x
-	return p
-}
-
-func (x Calculator2Request_Operation) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (Calculator2Request_Operation) Descriptor() protoreflect.EnumDescriptor {
-	return file_example_interface_calculator_proto_enumTypes[1].Descriptor()
-}
-
-func (Calculator2Request_Operation) Type() protoreflect.EnumType {
-	return &file_example_interface_calculator_proto_enumTypes[1]
-}
-
-func (x Calculator2Request_Operation) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use Calculator2Request_Operation.Descriptor instead.
-func (Calculator2Request_Operation) EnumDescriptor() ([]byte, []int) {
-	return file_example_interface_calculator_proto_rawDescGZIP(), []int{1, 0}
-}
-
-type Calculator1Request struct {
+type CalculateRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Operation    Calculator1Request_Operation `protobuf:"varint,1,opt,name=operation,proto3,enum=protocols.Calculator1Request_Operation" json:"operation,omitempty"`
-	FirstNumber  int64                        `protobuf:"varint,2,opt,name=first_number,json=firstNumber,proto3" json:"first_number,omitempty"`
-	SecondNumber int64                        `protobuf:"varint,3,opt,name=second_number,json=secondNumber,proto3" json:"second_number,omitempty"`
+	Operation    CalculateRequest_Operation `protobuf:"varint,1,opt,name=operation,proto3,enum=protocols.CalculateRequest_Operation" json:"operation,omitempty"`
+	FirstNumber  int64                      `protobuf:"varint,2,opt,name=first_number,json=firstNumber,proto3" json:"first_number,omitempty"`
+	SecondNumber int64                      `protobuf:"varint,3,opt,name=second_number,json=secondNumber,proto3" json:"second_number,omitempty"`
 }
 
-func (x *Calculator1Request) Reset() {
-	*x = Calculator1Request{}
+func (x *CalculateRequest) Reset() {
+	*x = CalculateRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_example_interface_calculator_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -131,13 +94,13 @@ func (x *Calculator1Request) Reset() {
 	}
 }
 
-func (x *Calculator1Request) String() string {
+func (x *CalculateRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Calculator1Request) ProtoMessage() {}
+func (*CalculateRequest) ProtoMessage() {}
 
-func (x *Calculator1Request) ProtoReflect() protoreflect.Message {
+func (x *CalculateRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_example_interface_calculator_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -149,44 +112,42 @@ func (x *Calculator1Request) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Calculator1Request.ProtoReflect.Descriptor instead.
-func (*Calculator1Request) Descriptor() ([]byte, []int) {
+// Deprecated: Use CalculateRequest.ProtoReflect.Descriptor instead.
+func (*CalculateRequest) Descriptor() ([]byte, []int) {
 	return file_example_interface_calculator_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Calculator1Request) GetOperation() Calculator1Request_Operation {
+func (x *CalculateRequest) GetOperation() CalculateRequest_Operation {
 	if x != nil {
 		return x.Operation
 	}
-	return Calculator1Request_UNKNOWN
+	return CalculateRequest_UNKNOWN
 }
 
-func (x *Calculator1Request) GetFirstNumber() int64 {
+func (x *CalculateRequest) GetFirstNumber() int64 {
 	if x != nil {
 		return x.FirstNumber
 	}
 	return 0
 }
 
-func (x *Calculator1Request) GetSecondNumber() int64 {
+func (x *CalculateRequest) GetSecondNumber() int64 {
 	if x != nil {
 		return x.SecondNumber
 	}
 	return 0
 }
 
-type Calculator2Request struct {
+type CalculateResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Op     Calculator2Request_Operation `protobuf:"varint,1,opt,name=op,proto3,enum=protocols.Calculator2Request_Operation" json:"op,omitempty"`
-	First  int64                        `protobuf:"varint,2,opt,name=first,proto3" json:"first,omitempty"`
-	Second int64                        `protobuf:"varint,3,opt,name=second,proto3" json:"second,omitempty"`
+	Result int64 `protobuf:"varint,1,opt,name=result,proto3" json:"result,omitempty"`
 }
 
-func (x *Calculator2Request) Reset() {
-	*x = Calculator2Request{}
+func (x *CalculateResponse) Reset() {
+	*x = CalculateResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_example_interface_calculator_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -194,13 +155,13 @@ func (x *Calculator2Request) Reset() {
 	}
 }
 
-func (x *Calculator2Request) String() string {
+func (x *CalculateResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Calculator2Request) ProtoMessage() {}
+func (*CalculateResponse) ProtoMessage() {}
 
-func (x *Calculator2Request) ProtoReflect() protoreflect.Message {
+func (x *CalculateResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_example_interface_calculator_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -212,42 +173,26 @@ func (x *Calculator2Request) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Calculator2Request.ProtoReflect.Descriptor instead.
-func (*Calculator2Request) Descriptor() ([]byte, []int) {
+// Deprecated: Use CalculateResponse.ProtoReflect.Descriptor instead.
+func (*CalculateResponse) Descriptor() ([]byte, []int) {
 	return file_example_interface_calculator_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Calculator2Request) GetOp() Calculator2Request_Operation {
+func (x *CalculateResponse) GetResult() int64 {
 	if x != nil {
-		return x.Op
-	}
-	return Calculator2Request_UNKNOWN
-}
-
-func (x *Calculator2Request) GetFirst() int64 {
-	if x != nil {
-		return x.First
+		return x.Result
 	}
 	return 0
 }
 
-func (x *Calculator2Request) GetSecond() int64 {
-	if x != nil {
-		return x.Second
-	}
-	return 0
-}
-
-type CalculatorResponse struct {
+type GetRandomRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	Result int64 `protobuf:"varint,1,opt,name=result,proto3" json:"result,omitempty"`
 }
 
-func (x *CalculatorResponse) Reset() {
-	*x = CalculatorResponse{}
+func (x *GetRandomRequest) Reset() {
+	*x = GetRandomRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_example_interface_calculator_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -255,13 +200,13 @@ func (x *CalculatorResponse) Reset() {
 	}
 }
 
-func (x *CalculatorResponse) String() string {
+func (x *GetRandomRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CalculatorResponse) ProtoMessage() {}
+func (*GetRandomRequest) ProtoMessage() {}
 
-func (x *CalculatorResponse) ProtoReflect() protoreflect.Message {
+func (x *GetRandomRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_example_interface_calculator_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -273,14 +218,54 @@ func (x *CalculatorResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CalculatorResponse.ProtoReflect.Descriptor instead.
-func (*CalculatorResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetRandomRequest.ProtoReflect.Descriptor instead.
+func (*GetRandomRequest) Descriptor() ([]byte, []int) {
 	return file_example_interface_calculator_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *CalculatorResponse) GetResult() int64 {
+type GetRandomResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Random int64 `protobuf:"varint,1,opt,name=random,proto3" json:"random,omitempty"`
+}
+
+func (x *GetRandomResponse) Reset() {
+	*x = GetRandomResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_example_interface_calculator_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRandomResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRandomResponse) ProtoMessage() {}
+
+func (x *GetRandomResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_example_interface_calculator_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRandomResponse.ProtoReflect.Descriptor instead.
+func (*GetRandomResponse) Descriptor() ([]byte, []int) {
+	return file_example_interface_calculator_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetRandomResponse) GetRandom() int64 {
 	if x != nil {
-		return x.Result
+		return x.Random
 	}
 	return 0
 }
@@ -291,45 +276,40 @@ var file_example_interface_calculator_proto_rawDesc = []byte{
 	0x0a, 0x22, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x66,
 	0x61, 0x63, 0x65, 0x2f, 0x63, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x09, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x73, 0x22,
-	0xc6, 0x01, 0x0a, 0x12, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72, 0x31, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x45, 0x0a, 0x09, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x27, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x63, 0x6f, 0x6c, 0x73, 0x2e, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72,
-	0x31, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x4f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x52, 0x09, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x21, 0x0a,
-	0x0c, 0x66, 0x69, 0x72, 0x73, 0x74, 0x5f, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x03, 0x52, 0x0b, 0x66, 0x69, 0x72, 0x73, 0x74, 0x4e, 0x75, 0x6d, 0x62, 0x65, 0x72,
-	0x12, 0x23, 0x0a, 0x0d, 0x73, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x5f, 0x6e, 0x75, 0x6d, 0x62, 0x65,
-	0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0c, 0x73, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x4e,
-	0x75, 0x6d, 0x62, 0x65, 0x72, 0x22, 0x21, 0x0a, 0x09, 0x4f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x12, 0x0b, 0x0a, 0x07, 0x55, 0x4e, 0x4b, 0x4e, 0x4f, 0x57, 0x4e, 0x10, 0x00, 0x12,
-	0x07, 0x0a, 0x03, 0x53, 0x55, 0x4d, 0x10, 0x01, 0x22, 0xa3, 0x01, 0x0a, 0x12, 0x43, 0x61, 0x6c,
-	0x63, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72, 0x32, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x37, 0x0a, 0x02, 0x6f, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x27, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x73, 0x2e, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74,
-	0x6f, 0x72, 0x32, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x4f, 0x70, 0x65, 0x72, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x52, 0x02, 0x6f, 0x70, 0x12, 0x14, 0x0a, 0x05, 0x66, 0x69, 0x72, 0x73,
-	0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x66, 0x69, 0x72, 0x73, 0x74, 0x12, 0x16,
-	0x0a, 0x06, 0x73, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06,
-	0x73, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x22, 0x26, 0x0a, 0x09, 0x4f, 0x70, 0x65, 0x72, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x12, 0x0b, 0x0a, 0x07, 0x55, 0x4e, 0x4b, 0x4e, 0x4f, 0x57, 0x4e, 0x10, 0x00,
-	0x12, 0x0c, 0x0a, 0x08, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x70, 0x6c, 0x79, 0x10, 0x01, 0x22, 0x2c,
-	0x0a, 0x12, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72, 0x52, 0x65, 0x73, 0x70,
+	0xdd, 0x01, 0x0a, 0x10, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x43, 0x0a, 0x09, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x25, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63,
+	0x6f, 0x6c, 0x73, 0x2e, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x2e, 0x4f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x09,
+	0x6f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x21, 0x0a, 0x0c, 0x66, 0x69, 0x72,
+	0x73, 0x74, 0x5f, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52,
+	0x0b, 0x66, 0x69, 0x72, 0x73, 0x74, 0x4e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x12, 0x23, 0x0a, 0x0d,
+	0x73, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x5f, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x0c, 0x73, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x4e, 0x75, 0x6d, 0x62, 0x65,
+	0x72, 0x22, 0x3c, 0x0a, 0x09, 0x4f, 0x70, 0x65, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0b,
+	0x0a, 0x07, 0x55, 0x4e, 0x4b, 0x4e, 0x4f, 0x57, 0x4e, 0x10, 0x00, 0x12, 0x07, 0x0a, 0x03, 0x53,
+	0x55, 0x4d, 0x10, 0x01, 0x12, 0x07, 0x0a, 0x03, 0x53, 0x55, 0x42, 0x10, 0x02, 0x12, 0x07, 0x0a,
+	0x03, 0x4d, 0x55, 0x4c, 0x10, 0x03, 0x12, 0x07, 0x0a, 0x03, 0x44, 0x49, 0x56, 0x10, 0x04, 0x22,
+	0x2b, 0x0a, 0x11, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70,
 	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x32, 0xa4, 0x01, 0x0a,
-	0x0a, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x4a, 0x0a, 0x0a, 0x43,
-	0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x31, 0x12, 0x1d, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x63, 0x6f, 0x6c, 0x73, 0x2e, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72,
-	0x31, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x63, 0x6f, 0x6c, 0x73, 0x2e, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4a, 0x0a, 0x0a, 0x43, 0x61, 0x6c, 0x63, 0x75,
-	0x6c, 0x61, 0x74, 0x65, 0x32, 0x12, 0x1d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c,
-	0x73, 0x2e, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72, 0x32, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x1d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x73,
-	0x2e, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x42, 0x1e, 0x5a, 0x1c, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2f, 0x69,
-	0x6e, 0x74, 0x65, 0x72, 0x66, 0x61, 0x63, 0x65, 0x2f, 0x63, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61,
-	0x74, 0x6f, 0x72, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x22, 0x12, 0x0a, 0x10,
+	0x47, 0x65, 0x74, 0x52, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x22, 0x2b, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x52, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x72, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x72, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x32, 0x9c, 0x01,
+	0x0a, 0x0a, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x46, 0x0a, 0x09,
+	0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x12, 0x1b, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x63, 0x6f, 0x6c, 0x73, 0x2e, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f,
+	0x6c, 0x73, 0x2e, 0x43, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x46, 0x0a, 0x09, 0x47, 0x65, 0x74, 0x52, 0x61, 0x6e, 0x64, 0x6f,
+	0x6d, 0x12, 0x1b, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x73, 0x2e, 0x47, 0x65,
+	0x74, 0x52, 0x61, 0x6e, 0x64, 0x6f, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x73, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x61,
+	0x6e, 0x64, 0x6f, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x1e, 0x5a, 0x1c,
+	0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x66, 0x61, 0x63,
+	0x65, 0x2f, 0x63, 0x61, 0x6c, 0x63, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -344,27 +324,26 @@ func file_example_interface_calculator_proto_rawDescGZIP() []byte {
 	return file_example_interface_calculator_proto_rawDescData
 }
 
-var file_example_interface_calculator_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_example_interface_calculator_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_example_interface_calculator_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_example_interface_calculator_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_example_interface_calculator_proto_goTypes = []interface{}{
-	(Calculator1Request_Operation)(0), // 0: protocols.Calculator1Request.Operation
-	(Calculator2Request_Operation)(0), // 1: protocols.Calculator2Request.Operation
-	(*Calculator1Request)(nil),        // 2: protocols.Calculator1Request
-	(*Calculator2Request)(nil),        // 3: protocols.Calculator2Request
-	(*CalculatorResponse)(nil),        // 4: protocols.CalculatorResponse
+	(CalculateRequest_Operation)(0), // 0: protocols.CalculateRequest.Operation
+	(*CalculateRequest)(nil),        // 1: protocols.CalculateRequest
+	(*CalculateResponse)(nil),       // 2: protocols.CalculateResponse
+	(*GetRandomRequest)(nil),        // 3: protocols.GetRandomRequest
+	(*GetRandomResponse)(nil),       // 4: protocols.GetRandomResponse
 }
 var file_example_interface_calculator_proto_depIdxs = []int32{
-	0, // 0: protocols.Calculator1Request.operation:type_name -> protocols.Calculator1Request.Operation
-	1, // 1: protocols.Calculator2Request.op:type_name -> protocols.Calculator2Request.Operation
-	2, // 2: protocols.Calculator.Calculate1:input_type -> protocols.Calculator1Request
-	3, // 3: protocols.Calculator.Calculate2:input_type -> protocols.Calculator2Request
-	4, // 4: protocols.Calculator.Calculate1:output_type -> protocols.CalculatorResponse
-	4, // 5: protocols.Calculator.Calculate2:output_type -> protocols.CalculatorResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	0, // 0: protocols.CalculateRequest.operation:type_name -> protocols.CalculateRequest.Operation
+	1, // 1: protocols.Calculator.Calculate:input_type -> protocols.CalculateRequest
+	3, // 2: protocols.Calculator.GetRandom:input_type -> protocols.GetRandomRequest
+	2, // 3: protocols.Calculator.Calculate:output_type -> protocols.CalculateResponse
+	4, // 4: protocols.Calculator.GetRandom:output_type -> protocols.GetRandomResponse
+	3, // [3:5] is the sub-list for method output_type
+	1, // [1:3] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_example_interface_calculator_proto_init() }
@@ -374,7 +353,7 @@ func file_example_interface_calculator_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_example_interface_calculator_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Calculator1Request); i {
+			switch v := v.(*CalculateRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -386,7 +365,7 @@ func file_example_interface_calculator_proto_init() {
 			}
 		}
 		file_example_interface_calculator_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Calculator2Request); i {
+			switch v := v.(*CalculateResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -398,7 +377,19 @@ func file_example_interface_calculator_proto_init() {
 			}
 		}
 		file_example_interface_calculator_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CalculatorResponse); i {
+			switch v := v.(*GetRandomRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_example_interface_calculator_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRandomResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -415,8 +406,8 @@ func file_example_interface_calculator_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_example_interface_calculator_proto_rawDesc,
-			NumEnums:      2,
-			NumMessages:   3,
+			NumEnums:      1,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
