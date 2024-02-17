@@ -27,12 +27,15 @@ func (g *FlagsGenerator) GetTable(ctx *context.Context) table.Table {
 	info.AddField("Type", "type", db.Integer).
 		FieldFilterable().FieldSortable().FieldDisplay(func(model types.FieldModel) interface{} {
 		if model.Value == "0" {
-			return "string"
+			return "String"
 		}
 		if model.Value == "1" {
-			return "boolean"
+			return "Boolean"
 		}
-		return "unknown"
+		if model.Value == "2" {
+			return "Integer"
+		}
+		return "Unknown"
 	})
 	info.AddField("Value", "value", db.Text).
 		FieldFilterable().FieldSortable()
@@ -49,6 +52,7 @@ func (g *FlagsGenerator) GetTable(ctx *context.Context) table.Table {
 	formList.AddField("Type", "type", db.Integer, form.SelectSingle).FieldOptions([]types.FieldOption{
 		{Text: "String", Value: "0"},
 		{Text: "Boolean", Value: "1"},
+		{Text: "Integer", Value: "2"},
 	})
 	formList.AddField("Value", "value", db.Text, form.Text)
 	formList.AddField("Staging Value", "staging_value", db.Text, form.Text)
